@@ -7,17 +7,18 @@ services:
     networks:
       - docker_network
     ports:
-      - "443:80"
-  wordpress:
-    build: ./requirements/wordpress
-    container_name: wordpress
-    networks:
-      - docker_network
-  mariadb:
-    build: ./requirements/mariadb
-    container_name: mariadb
-    networks:
-      - docker_network
+      # - "443:443"
+      - "80:80"
+  # wordpress:
+  #   build: ./requirements/wordpress
+  #   container_name: wordpress
+  #   networks:
+  #     - docker_network
+  # mariadb:
+  #   build: ./requirements/mariadb
+  #   container_name: mariadb
+  #   networks:
+  #     - docker_network
 
 volumes:
   database:
