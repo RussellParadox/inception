@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    volumes:
+      - website_files:/var/www/gdornic.42.fr
+    networks:
+      - docker_network
+    ports:
+      - "443:443"
+  # wordpress:
+  #   build: ./requirements/wordpress
+  #   container_name: wordpress
+  #   networks:
+  #     - docker_network
+  # mariadb:
+  #   build: ./requirements/mariadb
+  #   container_name: mariadb
+  #   networks:
+  #     - docker_network
+
+volumes:
+  database:
+  website_files:
+
+networks:
+  docker_network:
+    driver: bridge
