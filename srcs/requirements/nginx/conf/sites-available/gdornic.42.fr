@@ -1,0 +1,11 @@
+server {
+    listen 443 ssl default_server;
+
+    server_name gdornic.42.fr;
+    ssl_certificate /etc/nginx/tls/gdornic.42.fr.crt;
+    ssl_certificate_key /etc/nginx/tls/gdornic.42.fr.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    root /var/www/html;
+    index index.php index.html index.htm index.nginx-debian.html;
+}
