@@ -5,7 +5,7 @@ services:
     build: ./requirements/nginx
     container_name: nginx
     volumes:
-      - website_files:/var/www/gdornic.42.fr
+      - website_files:/var/www/
     networks:
       - docker_network
     ports:
@@ -15,11 +15,19 @@ services:
   #   container_name: wordpress
   #   networks:
   #     - docker_network
-  # mariadb:
-  #   build: ./requirements/mariadb
-  #   container_name: mariadb
-  #   networks:
-  #     - docker_network
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    volumes:
+      - database:/var/lib/mysql
+    networks:
+      - docker_network
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    restart: always
 
 volumes:
   database:
