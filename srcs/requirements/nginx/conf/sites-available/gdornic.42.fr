@@ -6,6 +6,15 @@ server {
     ssl_certificate_key /etc/nginx/tls/gdornic.42.fr.key;
     ssl_protocols TLSv1.2 TLSv1.3;
 
-    root /var/www/html;
-    index index.php index.html index.htm index.nginx-debian.html;
+    root /var/www/html/wordpress;
+    index index.php index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass wordpress:9000;
+    }
 }

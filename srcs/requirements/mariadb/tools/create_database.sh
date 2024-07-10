@@ -1,6 +1,31 @@
+#!/bin/bash
+
+# Start MariaDB service
 service mariadb start
 
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$MYSQL_ROOT_PASSWORD';"
-mysql -e "CREATE DATABASE $MYSQL_DATABASE;"
-mysql -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD';"
-mysql -e "FLUSH PRIVILEGES;"
+# Wait for MariaDB to start
+sleep 10
+
+# Create Database
+mariadb -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+
+# Create User
+mariadb -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+
+# Grant Privileges
+mariadb -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+
+# Alter root password
+mariadb -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+
+# Flush Privileges
+mariadb -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES;"
+
+# Shutdown MariaDB
+mariadb-admin -u root -p${MYSQL_ROOT_PASSWORD} shutdown
+
+# Wait for MariaDB to stop
+sleep 10
+
+# Run MariaDB server
+exec mysqld_safe

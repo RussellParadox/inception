@@ -4,20 +4,37 @@ services:
   nginx:
     build: ./requirements/nginx
     container_name: nginx
+    depends_on:
+      - wordpress
     volumes:
-      - website_files:/var/www/
+      - website_files:/var/www
     networks:
       - docker_network
     ports:
       - "443:443"
-  # wordpress:
-  #   build: ./requirements/wordpress
-  #   container_name: wordpress
-  #   networks:
-  #     - docker_network
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    expose:
+      - 9000
+    depends_on:
+      - mariadb
+    volumes:
+      - website_files:/var/www
+      - database:/var/lib/mysql
+    networks:
+      - docker_network
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_HOSTNAME=mariadb
   mariadb:
     build: ./requirements/mariadb
     container_name: mariadb
+    expose:
+      - 3306
     volumes:
       - database:/var/lib/mysql
     networks:
