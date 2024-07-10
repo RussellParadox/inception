@@ -20,11 +20,6 @@ COPY tools/cli_install.sh /
 RUN chmod +x cli_install.sh && \
 ./cli_install.sh
 
-# Setup site and admin
-# RUN cd /var/www/html/wordpress/ && \
-# wp core install --allow-root --title="gdornic.42.fr" --admin_user=$WP_ADMIN --admin_password=$WP_PASSWORD --admin_email=info@wp-cli.org
-
 COPY tools/start.sh /var/www/html/wordpress
 RUN chmod +x /var/www/html/wordpress/start.sh
-# CMD [ "/usr/sbin/php-fpm7.4", "-F" ]
 CMD [ "/var/www/html/wordpress/start.sh" ]
