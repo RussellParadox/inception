@@ -17,6 +17,4 @@ openssl req -x509 -nodes -out /etc/nginx/tls/gdornic.42.fr.crt -keyout /etc/ngin
 # RUN chmod 755 /var/www/gdornic.42.fr/html && \
 # chown -R www-data:www-data /var/www/gdornic.42.fr/html
 
-EXPOSE 443
-
 CMD [ "nginx" ]

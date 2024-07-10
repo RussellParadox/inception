@@ -1,49 +1,69 @@
-version: '3'
-
 services:
   nginx:
     build: ./requirements/nginx
     container_name: nginx
+    expose:
+      - 443
     depends_on:
       - wordpress
     volumes:
       - website_files:/var/www
     networks:
-      - docker_network
+      - inception_network
     ports:
       - "443:443"
+    restart: always
   wordpress:
     build: ./requirements/wordpress
     container_name: wordpress
     expose:
       - 9000
+    # depends_on:
+    #   - mariadb
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
     volumes:
       - website_files:/var/www
-      - database:/var/lib/mysql
     networks:
-      - docker_network
+      - inception_network
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_HOSTNAME=mariadb
+      - WP_ADMIN=${WP_ADMIN}
+      - WP_PASSWORD=${WP_PASSWORD}
+    restart: always
   mariadb:
     build: ./requirements/mariadb
     container_name: mariadb
     expose:
       - 3306
+    healthcheck:
+      test: "mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -h $MYSQL_HOSTNAME --connect_timeout=1"
+      interval: 10s
+      retries: 50
     volumes:
       - database:/var/lib/mysql
     networks:
-      - docker_network
+      - inception_network
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    restart: always
+  redis:
+    build: ./requirements/bonus/redis
+    container_name: redis
+    expose:
+      - 6379
+    networks:
+      - inception_network
     restart: always
 
 volumes:
@@ -51,5 +71,5 @@ volumes:
   website_files:
 
 networks:
-  docker_network:
+  inception_network:
     driver: bridge

@@ -4,7 +4,7 @@
 service mariadb start
 
 # Wait for MariaDB to start
-sleep 10
+sleep 5
 
 # Create Database
 mariadb -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
@@ -25,7 +25,7 @@ mariadb -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES;"
 mariadb-admin -u root -p${MYSQL_ROOT_PASSWORD} shutdown
 
 # Wait for MariaDB to stop
-sleep 10
+sleep 5
 
 # Run MariaDB server
 exec mysqld_safe
