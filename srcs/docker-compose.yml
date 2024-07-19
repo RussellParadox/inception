@@ -74,10 +74,21 @@ services:
       - "21:21"
       - "21100-21110:21100-21110"
     restart: always
+  django:
+    build: ./requirements/bonus/django
+    container_name: django
+    volumes:
+      - cv_webfiles:/var/www
+    networks:
+      - inception_network
+    ports:
+      - "8000:8000"
+    restart: always
 
 volumes:
   database:
   website_files:
+  cv_webfiles:
 
 networks:
   inception_network:
