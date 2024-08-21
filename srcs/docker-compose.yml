@@ -98,11 +98,26 @@ services:
     ports:
       - "8080:80"
     restart: always
+  restic:
+    build: ./requirements/bonus/restic
+    container_name: restic
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - database:/database
+      - backups:/backup
+    environment:
+      - RESTIC_PASSWORD=$RESTIC_PASSWORD
+    networks:
+      - inception_network
+    restart: always
 
 volumes:
   database:
   website_files:
   cv_webfiles:
+  backups:
 
 networks:
   inception_network:
